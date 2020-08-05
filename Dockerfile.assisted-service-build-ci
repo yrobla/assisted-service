@@ -2,13 +2,16 @@ FROM centos:7
 
 # Golang env vars
 ENV GO111MODULE=on \
-    GOPATH=${HOME}/go \
-    GOBIN=${HOME}/go/bin \
+    TMP=/tmp \
+    GOPATH=${TMP}/go \
+    GOBIN=${TMP}/go/bin \
     GOFLAGS="" \
     GOPROXY=https://proxy.golang.org \
-    GOROOT=/usr/local/go
+    GOROOT=/usr/local/go \
+    GOLANGCI_LINT_CACHE=/tmp/go/.cache/go-build/.cache
 ENV PATH="${GOBIN}:${HOME}/.go/bin:${PATH}" \
-    GOCACHE="${GOPATH}/pkg/mod"
+    GOCACHE="${GOPATH}/pkg/mod" \
+    XDG_CACHE_HOME=${TMP}
 
 # base: EPEL repo for extra tools
 RUN yum -y install epel-release 
@@ -32,12 +35,16 @@ RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.12.2 \
               github.com/golang/mock/mockgen@v1.4.3 \
               github.com/vektra/mockery/.../@v1.1.2
 
+# Install JQ
+RUN curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 --output /usr/bin/jq && chmod 775 /usr/bin/jq
+
+# Install Swagger
+RUN export download_url=$(curl -s https://api.github.com/repos/go-swagger/go-swagger/releases/latest | \
+    jq -r '.assets[] | select(.name | contains("'"$(uname | tr '[:upper:]' '[:lower:]')"'_amd64")) | .browser_download_url') \
+    && curl -o /usr/local/bin/swagger -L'#' "$download_url" && chmod +x /usr/local/bin/swagger
+
 # Python Deps
 RUN pip3 install boto3==1.13.14 waiting==1.4.1 awscli --user
 
-# Install Minikube
-RUN curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.10.1/minikube-linux-amd64 \
-  && chmod +x minikube && mkdir -p /usr/local/bin/ && install minikube /usr/local/bin/
-
-# Docker/Podman 
+# Podman 
 RUN yum install -y podman
