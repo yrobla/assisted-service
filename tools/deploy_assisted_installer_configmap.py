@@ -61,6 +61,8 @@ def main():
             deploy_tag = get_deployment_tag(deploy_options)
             if deploy_tag:
                 versions["RELEASE_TAG"] = deploy_tag
+            versions["AGENT_DOCKER_IMAGE"] = "192.168.112.199:5000/ocpmetal/agent:latest"
+            versions["IMAGE_BUILDER"] = "192.168.112.199:5000/ocpmetal/installer-image-build:latest"
 
             y = yaml.load(data)
             y['data'].update(versions)

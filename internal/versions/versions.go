@@ -10,9 +10,9 @@ import (
 )
 
 type Versions struct {
-	SelfVersion         string `envconfig:"SELF_VERSION" default:"quay.io/ocpmetal/installer-image-build:latest"`
-	ImageBuilder        string `envconfig:"IMAGE_BUILDER" default:"quay.io/ocpmetal/installer-image-build:latest"`
-	AgentDockerImg      string `envconfig:"AGENT_DOCKER_IMAGE" default:"quay.io/ocpmetal/agent:latest"`
+	SelfVersion         string `envconfig:"SELF_VERSION" default:"192.168.112.199:5000/ocpmetal/installer-image-build:latest"`
+	ImageBuilder        string `envconfig:"IMAGE_BUILDER" default:"192.168.112.199:5000/ocpmetal/installer-image-build:latest"`
+	AgentDockerImg      string `envconfig:"AGENT_DOCKER_IMAGE" default:"192.168.112.199:5000/ocpmetal/agent:latest"`
 	KubeconfigGenerator string `envconfig:"KUBECONFIG_GENERATE_IMAGE" default:"quay.io/ocpmetal/ignition-manifests-and-kubeconfig-generate:latest"`
 	InstallerImage      string `envconfig:"INSTALLER_IMAGE" default:"quay.io/ocpmetal/assisted-installer:latest"`
 	ControllerImage     string `envconfig:"CONTROLLER_IMAGE" default:"quay.io/ocpmetal/assisted-installer-controller:latest"`
